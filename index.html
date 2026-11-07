@@ -34,7 +34,59 @@
     touch-action:manipulation;
     -webkit-user-select:none;user-select:none;
   }
-  /* 胶片颗粒：压住渐变的色带，也让暗部有质感 */
+  /* 极光：两条窄带，贴着天际，向下淡出 */
+  .aurora{
+    position:fixed;left:-34%;right:-30%;top:-8%;height:58vh;z-index:0;pointer-events:none;
+    filter:blur(26px) saturate(1.25);
+    mix-blend-mode:screen;
+    opacity:.72;
+    -webkit-mask-image:linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,.85) 40%, rgba(0,0,0,0) 88%);
+    mask-image:linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,.85) 40%, rgba(0,0,0,0) 88%);
+    animation:aur 22s ease-in-out infinite alternate;
+    will-change:opacity,transform;
+  }
+  .aurora::before,.aurora::after{
+    content:"";position:absolute;left:-6%;right:-6%;border-radius:50%;
+  }
+  .aurora::before{
+    top:2%;height:24vh;
+    background:linear-gradient(90deg,
+      rgba(40,200,160,0) 0%, rgba(42,222,172,.18) 24%,
+      rgba(70,208,220,.15) 52%, rgba(96,150,240,.10) 74%, rgba(96,150,240,0) 90%);
+    transform:rotate(-6deg);
+  }
+  .aurora::after{
+    top:16%;height:17vh;
+    background:linear-gradient(90deg,
+      rgba(96,150,240,0) 6%, rgba(96,176,230,.13) 34%,
+      rgba(150,124,222,.13) 64%, rgba(150,124,222,0) 88%);
+    transform:rotate(-9deg);
+  }
+  @keyframes aur{
+    0%{opacity:.55;transform:translate3d(-2%,0,0) scale(1)}
+    50%{opacity:.85}
+    100%{opacity:.62;transform:translate3d(2%,1%,0) scale(1.04)}
+  }
+  /* 月亮：正好托住右上角的音符 */
+  .moon{
+    position:fixed;top:4%;right:7%;width:30vmin;height:30vmin;z-index:0;pointer-events:none;
+    border-radius:50%;
+    background:
+      radial-gradient(circle, rgba(244,249,255,.34) 0%, rgba(232,242,255,.16) 16%, rgba(214,230,250,.08) 38%, rgba(214,230,250,0) 66%);
+    filter:blur(13px);
+    opacity:.85;
+  }
+  /* 远处的路灯：画面下缘的虚焦光斑 */
+  .lights{position:fixed;inset:0;z-index:0;pointer-events:none}
+  .lights i{
+    position:absolute;border-radius:50%;
+    background:radial-gradient(circle, rgba(255,206,150,.65) 0%, rgba(255,190,120,.22) 42%, rgba(255,190,120,0) 70%);
+    filter:blur(9px);
+  }
+  .lights i:nth-child(1){left:4%;bottom:-2%;width:9vmin;height:9vmin;opacity:.42}
+  .lights i:nth-child(2){left:19%;bottom:-4%;width:5.5vmin;height:5.5vmin;opacity:.32}
+  .lights i:nth-child(3){right:6%;bottom:-3%;width:7vmin;height:7vmin;opacity:.36}
+
   body::before{
     content:"";position:fixed;inset:0;z-index:1;pointer-events:none;
     background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
@@ -71,6 +123,11 @@
     padding:16px;
   }
   .page.last{gap:8px}
+  /* 每页一点色温差：从冷走到灯下 */
+  .page:nth-child(1){background:radial-gradient(80% 60% at 50% 102%, rgba(190,150,100,.05), rgba(0,0,0,0) 70%)}
+  .page:nth-child(2){background:radial-gradient(80% 60% at 50% 110%, rgba(110,160,210,.07), rgba(0,0,0,0) 72%)}
+  .page:nth-child(3){background:radial-gradient(80% 60% at 50% 110%, rgba(210,150,95,.08), rgba(0,0,0,0) 72%)}
+  .page:nth-child(4){background:radial-gradient(80% 65% at 50% 105%, rgba(220,205,180,.06), rgba(0,0,0,0) 75%)}
   /* 每一页底部一层极淡的“雪地反光”，让画面有地面 */
   .page::before{
     content:"";position:absolute;left:0;right:0;bottom:0;height:30vh;
@@ -219,6 +276,9 @@
 </head>
 <body>
   <canvas id="snow"></canvas>
+  <div class="aurora"></div>
+  <div class="moon"></div>
+  <div class="lights"><i></i><i></i><i></i></div>
   <button class="sound" id="soundBtn" aria-label="音乐开关">♪</button>
 
   <div class="scroller" id="sc">
